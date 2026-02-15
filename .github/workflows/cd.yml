@@ -14,6 +14,7 @@ jobs:
     env:
       ECR_REPOSITORY: aandi-gateway-server
       CONTAINER_NAME: aandi-gateway-server
+      AWS_REGION: ${{ secrets.AWS_REGION }}
 
     steps:
       - name: Checkout
@@ -39,7 +40,7 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           role-session-name: github-actions-cd
-          aws-region: ${{ vars.AWS_REGION }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -64,7 +65,7 @@ jobs:
           script: |
             ECR_REGISTRY="${{ steps.login-ecr.outputs.registry }}"
             IMAGE_URI="${ECR_REGISTRY}/${{ env.ECR_REPOSITORY }}:${{ github.ref_name }}"
-            aws ecr get-login-password --region "${{ vars.AWS_REGION }}" | docker login --username AWS --password-stdin "${ECR_REGISTRY}"
+            aws ecr get-login-password --region "${{ env.AWS_REGION }}" | docker login --username AWS --password-stdin "${ECR_REGISTRY}"
             docker pull "${IMAGE_URI}"
             docker stop ${{ env.CONTAINER_NAME }} || true
             docker rm ${{ env.CONTAINER_NAME }} || true
