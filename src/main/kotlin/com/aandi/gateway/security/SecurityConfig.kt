@@ -30,6 +30,8 @@ class SecurityConfig {
             .authorizeExchange {
                 it.pathMatchers(HttpMethod.POST, "/internal/v1/cache/invalidation").permitAll()
                 it.pathMatchers("/actuator/health", "/actuator/health/**", "/actuator/info").permitAll()
+                it.pathMatchers("/v2/docs", "/v2/docs/**").permitAll()
+                it.pathMatchers("/v3/api-docs/**").permitAll()
                 it.anyExchange().authenticated()
             }
             .oauth2ResourceServer { oauth2 ->

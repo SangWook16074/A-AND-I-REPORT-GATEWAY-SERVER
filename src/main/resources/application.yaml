@@ -24,18 +24,6 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: post-service-swagger-ui-html
-          uri: ${POST_SERVICE_URI}
-          predicates:
-            - Path=/v2/post/swagger-ui.html
-          filters:
-            - SetPath=/swagger-ui.html
-        - id: post-service-swagger-ui
-          uri: ${POST_SERVICE_URI}
-          predicates:
-            - Path=/v2/post/swagger-ui/**
-          filters:
-            - RewritePath=/v2/post/swagger-ui/?(?<segment>.*), /swagger-ui/$\{segment}
         - id: post-service-openapi
           uri: ${POST_SERVICE_URI}
           predicates:
@@ -60,6 +48,13 @@ spring:
 
 server:
   port: ${SERVER_PORT:8080}
+
+springdoc:
+  swagger-ui:
+    path: /v2/docs
+    urls:
+      - name: post-service
+        url: /v2/post/v3/api-docs
 
 management:
   server:

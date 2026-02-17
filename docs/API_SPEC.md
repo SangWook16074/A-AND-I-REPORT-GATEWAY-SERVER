@@ -34,6 +34,14 @@
     - `/v2/post/{postId}` -> `/api/v1/posts/{postId}`
     - `/v2/post/images` -> `/api/v1/images`
 
+## 1-3) 서비스별 Swagger 라우팅
+
+- 통합 Swagger UI:
+  - `/v2/docs`
+- Swagger UI `urls` 드롭다운에서 서비스별 OpenAPI를 선택한다.
+- 현재 등록:
+  - `post-service`: `/v2/post/v3/api-docs`
+
 ## 2) 인증 정책
 
 - 기본 정책: 모든 요청은 Bearer Access Token 필요
