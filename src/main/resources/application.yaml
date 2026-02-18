@@ -78,6 +78,11 @@ spring:
               predicates:
                 - Path=/v1/admin/users
                 - Method=POST
+            - id: auth-service-v1-admin-users-delete
+              uri: ${AUTH_SERVICE_URI:http://localhost:9000}
+              predicates:
+                - Path=/v1/admin/users/**
+                - Method=DELETE
 
             - id: auth-service-login
               uri: ${AUTH_SERVICE_URI:http://localhost:9000}
@@ -128,6 +133,13 @@ spring:
                 - Method=POST
               filters:
                 - SetPath=/v1/admin/users
+            - id: auth-service-admin-users-delete
+              uri: ${AUTH_SERVICE_URI:http://localhost:9000}
+              predicates:
+                - Path=/v2/auth/admin/users/**
+                - Method=DELETE
+              filters:
+                - RewritePath=/v2/auth/admin/users/(?<segment>.*), /v1/admin/users/$\{segment}
 
             - id: post-service-v1-images
               uri: ${POST_SERVICE_URI:http://localhost:8084}
