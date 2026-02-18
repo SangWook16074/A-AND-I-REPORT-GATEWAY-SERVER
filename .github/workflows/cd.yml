@@ -70,6 +70,7 @@ jobs:
             AUTH_AUDIENCE="${{ vars.AUTH_AUDIENCE }}"
             ALLOWED_HOSTS="${{ vars.ALLOWED_HOSTS }}"
             ENFORCE_HTTPS="${{ vars.ENFORCE_HTTPS }}"
+            CORS_ALLOWED_ORIGINS="${{ vars.CORS_ALLOWED_ORIGINS }}"
             AUTH_SERVICE_URI="${{ secrets.AUTH_SERVICE_URI }}"
             POST_SERVICE_URI="${{ secrets.POST_SERVICE_URI }}"
             AUTH_JWT_SECRET="${{ secrets.AUTH_JWT_SECRET }}"
@@ -78,11 +79,13 @@ jobs:
             if [ -z "$AUTH_AUDIENCE" ]; then AUTH_AUDIENCE="${{ secrets.AUTH_AUDIENCE }}"; fi
             if [ -z "$ALLOWED_HOSTS" ]; then ALLOWED_HOSTS="${{ secrets.ALLOWED_HOSTS }}"; fi
             if [ -z "$ENFORCE_HTTPS" ]; then ENFORCE_HTTPS="${{ secrets.ENFORCE_HTTPS }}"; fi
+            if [ -z "$CORS_ALLOWED_ORIGINS" ]; then CORS_ALLOWED_ORIGINS="${{ secrets.CORS_ALLOWED_ORIGINS }}"; fi
 
             if [ -z "$AUTH_ISSUER_URI" ]; then AUTH_ISSUER_URI="https://auth.aandiclub.com"; fi
             if [ -z "$AUTH_AUDIENCE" ]; then AUTH_AUDIENCE="aandiclub-api"; fi
             if [ -z "$ALLOWED_HOSTS" ]; then ALLOWED_HOSTS="$DOMAIN"; fi
             if [ -z "$ENFORCE_HTTPS" ]; then ENFORCE_HTTPS="true"; fi
+            if [ -z "$CORS_ALLOWED_ORIGINS" ]; then CORS_ALLOWED_ORIGINS="https://${DOMAIN}"; fi
 
             [ -n "$AUTH_SERVICE_URI" ] || { echo "Missing secret: AUTH_SERVICE_URI"; exit 1; }
             [ -n "$POST_SERVICE_URI" ] || { echo "Missing secret: POST_SERVICE_URI"; exit 1; }
@@ -214,6 +217,7 @@ jobs:
                   POST_SERVICE_URI: "${POST_SERVICE_URI}"
                   ENFORCE_HTTPS: "${ENFORCE_HTTPS}"
                   ALLOWED_HOSTS: "${ALLOWED_HOSTS}"
+                  CORS_ALLOWED_ORIGINS: "${CORS_ALLOWED_ORIGINS}"
                   AUTH_JWT_CLOCK_SKEW_SECONDS: "30"
                   AUTH_RATE_LIMIT_ENABLED: "true"
                   AUTH_LOGIN_RATE_LIMIT_PER_MINUTE: "10"

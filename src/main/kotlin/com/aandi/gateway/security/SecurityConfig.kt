@@ -36,9 +36,11 @@ class SecurityConfig {
     ): SecurityWebFilterChain {
         return http
             .csrf { it.disable() }
+            .cors { }
             .httpBasic { it.disable() }
             .formLogin { it.disable() }
             .authorizeExchange {
+                it.pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 // Public endpoints
                 it.pathMatchers(HttpMethod.POST, "/v1/auth/**").permitAll()
                 it.pathMatchers(HttpMethod.POST, "/v2/auth/login", "/v2/auth/refresh").permitAll()

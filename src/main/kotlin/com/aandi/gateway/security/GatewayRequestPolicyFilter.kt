@@ -79,6 +79,10 @@ class GatewayRequestPolicyFilter(
         val request = exchange.request
         val path = request.path.pathWithinApplication()
 
+        if (request.method == HttpMethod.OPTIONS) {
+            return chain.filter(exchange)
+        }
+
         if (policy.enforceHttps && !isHttps(exchange)) {
             return reject(exchange, HttpStatus.FORBIDDEN)
         }
