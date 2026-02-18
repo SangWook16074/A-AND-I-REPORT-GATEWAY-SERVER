@@ -66,6 +66,28 @@ jobs:
             ECR_REGISTRY="${{ steps.login-ecr.outputs.registry }}"
             IMAGE_URI="${ECR_REGISTRY}/${{ env.ECR_REPOSITORY }}:${{ github.ref_name }}"
             DOMAIN="api.aandiclub.com"
+            AUTH_ISSUER_URI="${{ vars.AUTH_ISSUER_URI }}"
+            AUTH_AUDIENCE="${{ vars.AUTH_AUDIENCE }}"
+            ALLOWED_HOSTS="${{ vars.ALLOWED_HOSTS }}"
+            ENFORCE_HTTPS="${{ vars.ENFORCE_HTTPS }}"
+            AUTH_SERVICE_URI="${{ secrets.AUTH_SERVICE_URI }}"
+            POST_SERVICE_URI="${{ secrets.POST_SERVICE_URI }}"
+            AUTH_JWT_SECRET="${{ secrets.AUTH_JWT_SECRET }}"
+
+            if [ -z "$AUTH_ISSUER_URI" ]; then AUTH_ISSUER_URI="${{ secrets.AUTH_ISSUER_URI }}"; fi
+            if [ -z "$AUTH_AUDIENCE" ]; then AUTH_AUDIENCE="${{ secrets.AUTH_AUDIENCE }}"; fi
+            if [ -z "$ALLOWED_HOSTS" ]; then ALLOWED_HOSTS="${{ secrets.ALLOWED_HOSTS }}"; fi
+            if [ -z "$ENFORCE_HTTPS" ]; then ENFORCE_HTTPS="${{ secrets.ENFORCE_HTTPS }}"; fi
+
+            if [ -z "$AUTH_ISSUER_URI" ]; then AUTH_ISSUER_URI="https://auth.aandiclub.com"; fi
+            if [ -z "$AUTH_AUDIENCE" ]; then AUTH_AUDIENCE="aandiclub-api"; fi
+            if [ -z "$ALLOWED_HOSTS" ]; then ALLOWED_HOSTS="$DOMAIN"; fi
+            if [ -z "$ENFORCE_HTTPS" ]; then ENFORCE_HTTPS="true"; fi
+
+            [ -n "$AUTH_SERVICE_URI" ] || { echo "Missing secret: AUTH_SERVICE_URI"; exit 1; }
+            [ -n "$POST_SERVICE_URI" ] || { echo "Missing secret: POST_SERVICE_URI"; exit 1; }
+            [ -n "$AUTH_JWT_SECRET" ] || { echo "Missing secret: AUTH_JWT_SECRET"; exit 1; }
+
             aws ecr get-login-password --region "${{ env.AWS_REGION }}" | sudo docker login --username AWS --password-stdin "${ECR_REGISTRY}"
             sudo mkdir -p /opt/aandi/gateway
             sudo mkdir -p /opt/aandi/gateway/nginx /opt/aandi/gateway/certbot/conf /opt/aandi/gateway/certbot/www
@@ -184,9 +206,25 @@ jobs:
                 container_name: ${{ env.CONTAINER_NAME }}
                 restart: unless-stopped
                 environment:
-                  GATEWAY_AUTH_ENABLED: "false"
+                  GATEWAY_AUTH_ENABLED: "true"
+                  AUTH_ISSUER_URI: "${AUTH_ISSUER_URI}"
+                  AUTH_AUDIENCE: "${AUTH_AUDIENCE}"
+                  AUTH_JWT_SECRET: "${AUTH_JWT_SECRET}"
+                  AUTH_SERVICE_URI: "${AUTH_SERVICE_URI}"
+                  POST_SERVICE_URI: "${POST_SERVICE_URI}"
+                  ENFORCE_HTTPS: "${ENFORCE_HTTPS}"
+                  ALLOWED_HOSTS: "${ALLOWED_HOSTS}"
+                  AUTH_JWT_CLOCK_SKEW_SECONDS: "30"
+                  AUTH_RATE_LIMIT_ENABLED: "true"
+                  AUTH_LOGIN_RATE_LIMIT_PER_MINUTE: "10"
+                  AUTH_REFRESH_RATE_LIMIT_PER_MINUTE: "30"
+                  AUTH_LOGOUT_RATE_LIMIT_PER_MINUTE: "30"
+                  PREVALIDATE_REFRESH_TOKEN_TYPE: "true"
+                  ENFORCE_METHOD_PATH_ALLOWLIST: "true"
+                  ENFORCE_JSON_CONTENT_TYPE: "true"
+                  MAX_REQUEST_BODY_SIZE: "2MB"
+                  MAX_REQUEST_HEADER_SIZE: "16KB"
                   INTERNAL_EVENT_TOKEN: "${{ secrets.INTERNAL_EVENT_TOKEN }}"
-                  POST_SERVICE_URI: "${{ secrets.POST_SERVICE_URI }}"
                   REDIS_HOST: redis
                   REDIS_PORT: "6379"
                   REDIS_PASSWORD: "${{ secrets.REDIS_PASSWORD }}"
