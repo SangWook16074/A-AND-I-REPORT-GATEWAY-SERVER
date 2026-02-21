@@ -21,6 +21,7 @@ services:
       - AUTH_JWT_SECRET=${AUTH_JWT_SECRET:-local-dev-jwt-secret-must-be-at-least-32-bytes}
       - AUTH_JWT_CLOCK_SKEW_SECONDS=${AUTH_JWT_CLOCK_SKEW_SECONDS:-30}
       - AUTH_SERVICE_URI=${AUTH_SERVICE_URI:-http://host.docker.internal:9000}
+      - REPORT_SERVICE_URI=${REPORT_SERVICE_URI:-http://host.docker.internal:8081}
       - POST_SERVICE_URI=${POST_SERVICE_URI:-http://host.docker.internal:8084}
       - ENFORCE_HTTPS=${ENFORCE_HTTPS:-false}
       - ALLOWED_HOSTS=${ALLOWED_HOSTS:-}

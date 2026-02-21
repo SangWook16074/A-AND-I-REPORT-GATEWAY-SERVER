@@ -197,6 +197,15 @@ class SecurityConfigTests(
     }
 
     @Test
+    fun `report endpoint is allowlisted and requires authentication`() {
+        webTestClient.get()
+            .uri("/v2/report")
+            .exchange()
+            .expectStatus()
+            .isUnauthorized
+    }
+
+    @Test
     fun `internal invalidation endpoint is forbidden without internal token`() {
         webTestClient.post()
             .uri("/internal/v1/cache/invalidation")

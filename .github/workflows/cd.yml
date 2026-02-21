@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*.*.*'
+  workflow_dispatch:
 
 jobs:
   build-push-deploy:
@@ -73,6 +74,7 @@ jobs:
             ENFORCE_HTTPS="${{ vars.ENFORCE_HTTPS }}"
             CORS_ALLOWED_ORIGIN_PATTERNS="${{ vars.CORS_ALLOWED_ORIGIN_PATTERNS }}"
             AUTH_SERVICE_URI="${{ secrets.AUTH_SERVICE_URI }}"
+            REPORT_SERVICE_URI="${{ secrets.REPORT_SERVICE_URI }}"
             POST_SERVICE_URI="${{ secrets.POST_SERVICE_URI }}"
             AUTH_JWT_SECRET="${{ secrets.AUTH_JWT_SECRET }}"
 
@@ -91,6 +93,7 @@ jobs:
             if [ -z "$CORS_ALLOWED_ORIGIN_PATTERNS" ]; then CORS_ALLOWED_ORIGIN_PATTERNS="https://*"; fi
 
             [ -n "$AUTH_SERVICE_URI" ] || { echo "Missing secret: AUTH_SERVICE_URI"; exit 1; }
+            [ -n "$REPORT_SERVICE_URI" ] || { echo "Missing secret: REPORT_SERVICE_URI"; exit 1; }
             [ -n "$POST_SERVICE_URI" ] || { echo "Missing secret: POST_SERVICE_URI"; exit 1; }
             [ -n "$AUTH_JWT_SECRET" ] || { echo "Missing secret: AUTH_JWT_SECRET"; exit 1; }
 
@@ -217,6 +220,7 @@ jobs:
                   AUTH_AUDIENCE: "${AUTH_AUDIENCE}"
                   AUTH_JWT_SECRET: "${AUTH_JWT_SECRET}"
                   AUTH_SERVICE_URI: "${AUTH_SERVICE_URI}"
+                  REPORT_SERVICE_URI: "${REPORT_SERVICE_URI}"
                   POST_SERVICE_URI: "${POST_SERVICE_URI}"
                   ENFORCE_HTTPS: "${ENFORCE_HTTPS}"
                   ALLOWED_HOSTS: "${ALLOWED_HOSTS}"

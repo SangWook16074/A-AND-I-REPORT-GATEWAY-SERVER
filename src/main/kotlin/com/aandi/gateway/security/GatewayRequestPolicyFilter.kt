@@ -58,6 +58,8 @@ class GatewayRequestPolicyFilter(
         AllowRule(HttpMethod.GET, parser.parse("/v2/swagger-ui/**")),
         AllowRule(HttpMethod.GET, parser.parse("/v2/post/v3/api-docs")),
         AllowRule(HttpMethod.GET, parser.parse("/v2/post/v3/api-docs/**")),
+        AllowRule(HttpMethod.GET, parser.parse("/v2/report/v3/api-docs")),
+        AllowRule(HttpMethod.GET, parser.parse("/v2/report/v3/api-docs/**")),
         AllowRule(HttpMethod.GET, parser.parse("/v2/auth/v3/api-docs")),
         AllowRule(HttpMethod.GET, parser.parse("/v2/auth/v3/api-docs/**")),
         AllowRule(HttpMethod.GET, parser.parse("/actuator/health")),
@@ -79,6 +81,12 @@ class GatewayRequestPolicyFilter(
         AllowRule(HttpMethod.GET, parser.parse("/v2/post/{postId}")),
         AllowRule(HttpMethod.PATCH, parser.parse("/v2/post/{postId}")),
         AllowRule(HttpMethod.DELETE, parser.parse("/v2/post/{postId}")),
+        AllowRule(HttpMethod.GET, parser.parse("/v2/report")),
+        AllowRule(HttpMethod.POST, parser.parse("/v2/report")),
+        AllowRule(HttpMethod.GET, parser.parse("/v2/report/allReport")),
+        AllowRule(HttpMethod.GET, parser.parse("/v2/report/{id}")),
+        AllowRule(HttpMethod.PUT, parser.parse("/v2/report/{id}")),
+        AllowRule(HttpMethod.DELETE, parser.parse("/v2/report/{id}")),
         AllowRule(HttpMethod.POST, parser.parse("/v2/post/images"))
     )
 
