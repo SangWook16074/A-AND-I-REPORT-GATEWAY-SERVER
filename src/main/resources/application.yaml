@@ -93,6 +93,11 @@ spring:
               predicates:
                 - Path=/v1/admin/users
                 - Method=POST
+            - id: auth-service-v1-admin-users-role-patch
+              uri: ${AUTH_SERVICE_URI:http://localhost:9000}
+              predicates:
+                - Path=/v1/admin/users/role
+                - Method=PATCH
             - id: auth-service-v1-admin-users-reset-password
               uri: ${AUTH_SERVICE_URI:http://localhost:9000}
               predicates:
@@ -158,6 +163,20 @@ spring:
                 - Method=POST
               filters:
                 - SetPath=/v1/admin/users
+            - id: auth-service-admin-users-role-patch
+              uri: ${AUTH_SERVICE_URI:http://localhost:9000}
+              predicates:
+                - Path=/v2/auth/admin/users/role
+                - Method=PATCH
+              filters:
+                - SetPath=/v1/admin/users/role
+            - id: auth-service-admin-users-delete-root
+              uri: ${AUTH_SERVICE_URI:http://localhost:9000}
+              predicates:
+                - Path=/v2/auth/admin/users
+                - Method=DELETE
+              filters:
+                - SetPath=/v1/admin/users
             - id: auth-service-admin-users-delete
               uri: ${AUTH_SERVICE_URI:http://localhost:9000}
               predicates:
@@ -179,10 +198,10 @@ spring:
               filters:
                 - RewritePath=/v2/report/(?<segment>.*), /api/report/$\{segment}
 
-            - id: post-service-v1-images
+            - id: post-service-v1-posts-images
               uri: ${POST_SERVICE_URI:http://localhost:8084}
               predicates:
-                - Path=/v1/images
+                - Path=/v1/posts/images
                 - Method=POST
             - id: post-service-v1-posts-root-get
               uri: ${POST_SERVICE_URI:http://localhost:8084}
@@ -272,13 +291,13 @@ spring:
               predicates:
                 - Path=/v2/post/images
               filters:
-                - SetPath=/v1/images
+                - SetPath=/v1/posts/images
             - id: post-service-images-subpaths
               uri: ${POST_SERVICE_URI:http://localhost:8084}
               predicates:
                 - Path=/v2/post/images/**
               filters:
-                - RewritePath=/v2/post/images/(?<segment>.*), /v1/images/$\{segment}
+                - RewritePath=/v2/post/images/(?<segment>.*), /v1/posts/images/$\{segment}
             - id: post-service-posts-root
               uri: ${POST_SERVICE_URI:http://localhost:8084}
               predicates:

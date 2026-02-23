@@ -22,7 +22,9 @@ class GatewayRequestPolicyFilter(
 
     private val jsonContentTypeExemptions: List<PathPattern> = listOf(
         parser.parse("/v1/me"),
-        parser.parse("/v1/images"),
+        parser.parse("/v1/posts"),
+        parser.parse("/v1/posts/images"),
+        parser.parse("/v2/post"),
         parser.parse("/v2/post/images"),
         parser.parse("/v2/post/images/**")
     )
@@ -39,7 +41,9 @@ class GatewayRequestPolicyFilter(
         AllowRule(HttpMethod.GET, parser.parse("/v1/admin/ping")),
         AllowRule(HttpMethod.GET, parser.parse("/v1/admin/users")),
         AllowRule(HttpMethod.POST, parser.parse("/v1/admin/users")),
+        AllowRule(HttpMethod.PATCH, parser.parse("/v1/admin/users/role")),
         AllowRule(HttpMethod.POST, parser.parse("/v1/admin/users/{id}/reset-password")),
+        AllowRule(HttpMethod.DELETE, parser.parse("/v1/admin/users")),
         AllowRule(HttpMethod.DELETE, parser.parse("/v1/admin/users/{id}")),
         AllowRule(HttpMethod.GET, parser.parse("/v1/posts")),
         AllowRule(HttpMethod.GET, parser.parse("/v1/posts/drafts")),
@@ -64,7 +68,7 @@ class GatewayRequestPolicyFilter(
         AllowRule(HttpMethod.GET, parser.parse("/v1/courses/{courseSlug}/weeks/{weekNo}/assignments")),
         AllowRule(HttpMethod.GET, parser.parse("/v1/courses/{courseSlug}/assignments")),
         AllowRule(HttpMethod.GET, parser.parse("/v1/courses/{courseSlug}/assignments/{assignmentId}")),
-        AllowRule(HttpMethod.POST, parser.parse("/v1/images")),
+        AllowRule(HttpMethod.POST, parser.parse("/v1/posts/images")),
         AllowRule(HttpMethod.GET, parser.parse("/api/ping/**")),
         AllowRule(HttpMethod.GET, parser.parse("/v3/api-docs/**")),
         AllowRule(HttpMethod.GET, parser.parse("/swagger-ui.html")),
@@ -91,6 +95,8 @@ class GatewayRequestPolicyFilter(
         AllowRule(HttpMethod.GET, parser.parse("/v2/auth/admin/ping")),
         AllowRule(HttpMethod.GET, parser.parse("/v2/auth/admin/users")),
         AllowRule(HttpMethod.POST, parser.parse("/v2/auth/admin/users")),
+        AllowRule(HttpMethod.PATCH, parser.parse("/v2/auth/admin/users/role")),
+        AllowRule(HttpMethod.DELETE, parser.parse("/v2/auth/admin/users")),
         AllowRule(HttpMethod.DELETE, parser.parse("/v2/auth/admin/users/{id}")),
         AllowRule(HttpMethod.GET, parser.parse("/v2/post")),
         AllowRule(HttpMethod.GET, parser.parse("/v2/post/drafts")),

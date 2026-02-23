@@ -45,7 +45,7 @@
   - post 라우트는 리라이트 적용:
     - `/v2/post` -> `/v1/posts`
     - `/v2/post/{postId}` -> `/v1/posts/{postId}`
-    - `/v2/post/images` -> `/v1/images`
+    - `/v2/post/images` -> `/v1/posts/images`
 
 ## 1-3) 서비스별 Swagger 라우팅
 

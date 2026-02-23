@@ -95,7 +95,7 @@ class SecurityConfig {
                 it.pathMatchers(HttpMethod.PATCH, "/v1/posts/*", "/v2/post/*").hasAnyRole("ORGANIZER", "ADMIN")
                 it.pathMatchers(HttpMethod.GET, "/v1/posts/drafts", "/v2/post/drafts").hasAnyRole("ORGANIZER", "ADMIN")
                 it.pathMatchers(HttpMethod.DELETE, "/v1/posts/*", "/v2/post/*").hasRole("ADMIN")
-                it.pathMatchers(HttpMethod.POST, "/v1/images", "/v2/post/images").hasAnyRole("ORGANIZER", "ADMIN")
+                it.pathMatchers(HttpMethod.POST, "/v1/posts/images", "/v2/post/images").hasAnyRole("ORGANIZER", "ADMIN")
 
                 // Any other route requires authentication
                 it.anyExchange().authenticated()

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.ApplicationContext
+import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockJwt
@@ -130,6 +131,28 @@ class SecurityConfigTests(
     }
 
     @Test
+    fun `posts create multipart endpoint requires authentication`() {
+        webTestClient.post()
+            .uri("/v1/posts")
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .body(BodyInserters.fromMultipartData("title", "t").with("content", "c"))
+            .exchange()
+            .expectStatus()
+            .isUnauthorized
+    }
+
+    @Test
+    fun `post images multipart endpoint requires authentication`() {
+        webTestClient.post()
+            .uri("/v1/posts/images")
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .body(BodyInserters.fromMultipartData("file", "dummy"))
+            .exchange()
+            .expectStatus()
+            .isUnauthorized
+    }
+
+    @Test
     fun `me password endpoint requires authentication`() {
         webTestClient.post()
             .uri("/v1/me/password")
@@ -157,6 +180,30 @@ class SecurityConfigTests(
             .uri("/v1/admin/users/11111111-1111-1111-1111-111111111111/reset-password")
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue("{}")
+            .exchange()
+            .expectStatus()
+            .isForbidden
+    }
+
+    @Test
+    fun `admin role patch endpoint is forbidden for non admin role`() {
+        webTestClient.mutateWith(mockJwt().authorities(SimpleGrantedAuthority("ROLE_USER")))
+            .patch()
+            .uri("/v1/admin/users/role")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue("""{"userId":"11111111-1111-1111-1111-111111111111","role":"ORGANIZER"}""")
+            .exchange()
+            .expectStatus()
+            .isForbidden
+    }
+
+    @Test
+    fun `admin users delete endpoint is forbidden for non admin role`() {
+        webTestClient.mutateWith(mockJwt().authorities(SimpleGrantedAuthority("ROLE_USER")))
+            .method(HttpMethod.DELETE)
+            .uri("/v1/admin/users")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue("""{"userId":"11111111-1111-1111-1111-111111111111"}""")
             .exchange()
             .expectStatus()
             .isForbidden
