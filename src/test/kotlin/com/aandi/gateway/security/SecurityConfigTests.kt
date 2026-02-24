@@ -234,13 +234,13 @@ class SecurityConfigTests(
     }
 
     @Test
-    fun `post delete requires admin`() {
+    fun `post delete allows organizer or admin`() {
         webTestClient.mutateWith(mockJwt().authorities(SimpleGrantedAuthority("ROLE_ORGANIZER")))
             .delete()
             .uri("/v1/posts/123")
             .exchange()
             .expectStatus()
-            .isForbidden
+            .value { assertNotEquals(403, it) }
     }
 
     @Test
