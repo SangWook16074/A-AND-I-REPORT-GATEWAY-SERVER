@@ -300,6 +300,24 @@ spring:
               predicates:
                 - Path=/v1/courses/**
 
+            - id: online-judge-service-v1-submissions-root-post
+              uri: ${ONLINE_JUDGE_SERVICE_URI:https://localhost:8080}
+              predicates:
+                - Path=/v1/submissions
+                - Method=POST
+            - id: online-judge-service-v1-submissions-stream-get
+              uri: ${ONLINE_JUDGE_SERVICE_URI:https://localhost:8080}
+              predicates:
+                - Path=/v1/submissions/{submissionId}/stream
+                - Method=GET
+              metadata:
+                response-timeout: 3600000
+            - id: online-judge-service-v1-submissions-by-id-get
+              uri: ${ONLINE_JUDGE_SERVICE_URI:https://localhost:8080}
+              predicates:
+                - Path=/v1/submissions/{submissionId}
+                - Method=GET
+
             - id: post-service-openapi-root
               uri: ${POST_SERVICE_URI:http://localhost:8084}
               predicates:
@@ -338,6 +356,18 @@ spring:
                 - Path=/v2/auth/v3/api-docs/**
               filters:
                 - RewritePath=/v2/auth/v3/api-docs/(?<segment>.*), /v3/api-docs/$\{segment}
+            - id: online-judge-service-openapi-root
+              uri: ${ONLINE_JUDGE_SERVICE_URI:https://localhost:8080}
+              predicates:
+                - Path=/v2/online-judge/v3/api-docs
+              filters:
+                - SetPath=/v3/api-docs
+            - id: online-judge-service-openapi-subpaths
+              uri: ${ONLINE_JUDGE_SERVICE_URI:https://localhost:8080}
+              predicates:
+                - Path=/v2/online-judge/v3/api-docs/**
+              filters:
+                - RewritePath=/v2/online-judge/v3/api-docs/(?<segment>.*), /v3/api-docs/$\{segment}
             - id: post-service-images-root
               uri: ${POST_SERVICE_URI:http://localhost:8084}
               predicates:
@@ -418,6 +448,8 @@ springdoc:
         url: /v2/auth/v3/api-docs
       - name: post-service
         url: /v2/post/v3/api-docs
+      - name: online-judge-service
+        url: /v2/online-judge/v3/api-docs
 
 management:
   server:

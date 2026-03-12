@@ -22,6 +22,7 @@ import kotlin.test.assertTrue
     properties = [
         "POST_SERVICE_URI=http://localhost:8084",
         "AUTH_SERVICE_URI=http://localhost:9000",
+        "ONLINE_JUDGE_SERVICE_URI=http://localhost:8080",
         "app.security.internal-event-token=test-internal-token",
         "security.jwt.secret=test-secret-key-with-32-bytes-minimum!",
         "app.security.policy.enforce-https=false"
@@ -429,6 +430,56 @@ class SecurityConfigTests(
             .exchange()
             .expectStatus()
             .isUnauthorized
+    }
+
+    @Test
+    fun `online judge submission create endpoint is allowlisted and requires authentication`() {
+        webTestClient.post()
+            .uri("/v1/submissions")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue("""{"problemId":"demo","language":"java","source":"class Main{}"}""")
+            .exchange()
+            .expectStatus()
+            .isUnauthorized
+    }
+
+    @Test
+    fun `online judge submission detail endpoint is allowlisted and requires authentication`() {
+        webTestClient.get()
+            .uri("/v1/submissions/submission-1")
+            .exchange()
+            .expectStatus()
+            .isUnauthorized
+    }
+
+    @Test
+    fun `online judge submission stream endpoint is allowlisted and requires authentication`() {
+        webTestClient.get()
+            .uri("/v1/submissions/submission-1/stream")
+            .exchange()
+            .expectStatus()
+            .isUnauthorized
+    }
+
+    @Test
+    fun `online judge submission route has expected method and path predicates`() {
+        val submissionRoute = routeById("online-judge-service-v1-submissions-root-post")
+        val pathPredicate = submissionRoute.predicates.firstOrNull { it.name == "Path" }
+        val methodPredicate = submissionRoute.predicates.firstOrNull { it.name == "Method" }
+
+        assertNotNull(pathPredicate, "submission create route should have path predicate")
+        assertNotNull(methodPredicate, "submission create route should have method predicate")
+        assertTrue(pathPredicate.args.values.contains("/v1/submissions"))
+        assertTrue(methodPredicate.args.values.contains("POST"))
+    }
+
+    @Test
+    fun `online judge openapi route rewrites to service docs path`() {
+        val openApiRoute = routeById("online-judge-service-openapi-root")
+        val setPathFilter = openApiRoute.filters.firstOrNull { it.name == "SetPath" }
+
+        assertNotNull(setPathFilter, "online judge openapi route should set backend path")
+        assertEquals("/v3/api-docs", setPathFilter.args.values.firstOrNull())
     }
 
     @Test
