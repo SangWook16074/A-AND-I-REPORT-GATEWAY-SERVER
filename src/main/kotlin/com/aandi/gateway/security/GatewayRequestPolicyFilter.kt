@@ -97,6 +97,7 @@ class GatewayRequestPolicyFilter(
         AllowRule(HttpMethod.GET, parser.parse("/v1/courses/assignments/{assignmentId}/course")),
         AllowRule(HttpMethod.GET, parser.parse("/v1/problems/{problemId}/submissions/me")),
         AllowRule(HttpMethod.GET, parser.parse("/v1/admin/submissions")),
+        AllowRule(HttpMethod.GET, parser.parse("/v1/admin/testcases")),
         AllowRule(HttpMethod.POST, parser.parse("/v1/submissions")),
         AllowRule(HttpMethod.GET, parser.parse("/v1/submissions/{submissionId}")),
         AllowRule(HttpMethod.GET, parser.parse("/v1/submissions/{submissionId}/stream")),
