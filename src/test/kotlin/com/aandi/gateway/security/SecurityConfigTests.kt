@@ -506,6 +506,25 @@ class SecurityConfigTests(
     }
 
     @Test
+    fun `admin testcases endpoint is allowlisted and requires authentication`() {
+        webTestClient.get()
+            .uri("/v1/admin/testcases")
+            .exchange()
+            .expectStatus()
+            .isUnauthorized
+    }
+
+    @Test
+    fun `admin testcases endpoint is forbidden for non admin role`() {
+        webTestClient.mutateWith(mockJwt().authorities(SimpleGrantedAuthority("ROLE_USER")))
+            .get()
+            .uri("/v1/admin/testcases")
+            .exchange()
+            .expectStatus()
+            .isForbidden
+    }
+
+    @Test
     fun `online judge submission create endpoint is allowlisted and requires authentication`() {
         webTestClient.post()
             .uri("/v1/submissions")
@@ -555,6 +574,18 @@ class SecurityConfigTests(
         assertNotNull(pathPredicate, "admin submissions route should have path predicate")
         assertNotNull(methodPredicate, "admin submissions route should have method predicate")
         assertTrue(pathPredicate.args.values.contains("/v1/admin/submissions"))
+        assertTrue(methodPredicate.args.values.contains("GET"))
+    }
+
+    @Test
+    fun `online judge admin testcases route has expected method and path predicates`() {
+        val adminTestcasesRoute = routeById("online-judge-service-v1-admin-testcases-get")
+        val pathPredicate = adminTestcasesRoute.predicates.firstOrNull { it.name == "Path" }
+        val methodPredicate = adminTestcasesRoute.predicates.firstOrNull { it.name == "Method" }
+
+        assertNotNull(pathPredicate, "admin testcases route should have path predicate")
+        assertNotNull(methodPredicate, "admin testcases route should have method predicate")
+        assertTrue(pathPredicate.args.values.contains("/v1/admin/testcases"))
         assertTrue(methodPredicate.args.values.contains("GET"))
     }
 

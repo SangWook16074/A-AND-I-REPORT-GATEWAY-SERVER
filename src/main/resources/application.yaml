@@ -327,6 +327,11 @@ spring:
               predicates:
                 - Path=/v1/admin/submissions
                 - Method=GET
+            - id: online-judge-service-v1-admin-testcases-get
+              uri: ${ONLINE_JUDGE_SERVICE_URI:https://localhost:8080}
+              predicates:
+                - Path=/v1/admin/testcases
+                - Method=GET
             - id: online-judge-service-v1-submissions-stream-get
               uri: ${ONLINE_JUDGE_SERVICE_URI:https://localhost:8080}
               predicates:
